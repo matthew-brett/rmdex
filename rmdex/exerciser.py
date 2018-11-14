@@ -16,10 +16,12 @@ MARK_RE = re.compile(r"""^\s*\#-
                      \s+(\d+)""", re.VERBOSE)
 
 
+EX_COMMENT_RE = re.compile(r'^\s*#-', re.M)
+
+
 
 def question_chunks(nb):
-    return [chunk for chunk in nb.chunks
-            if re.search(r'^\s*#-', chunk.code, re.M)]
+    return [chunk for chunk in nb.chunks if EX_COMMENT_RE.search(chunk.code)]
 
 
 def get_marks(code):
