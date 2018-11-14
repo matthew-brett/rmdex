@@ -14,7 +14,7 @@
 import codecs
 from argparse import ArgumentParser
 
-from nbex import make_exercise, check_exercise
+from rmdex import make_exercise, check_exercise
 from rnbgrader.nbparser import read_file
 
 

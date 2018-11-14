@@ -1,2 +1,2 @@
 include versioneer.py
-include nbex/_version.py
+include rmdex/_version.py

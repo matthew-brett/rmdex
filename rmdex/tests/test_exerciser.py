@@ -6,7 +6,7 @@ import codecs
 
 from rnbgrader import load, loads
 
-from nbex.exerciser import (make_check_exercise, make_exercise, get_marks,
+from rmdex.exerciser import (make_check_exercise, make_exercise, get_marks,
                             solution2exercise, check_exercise,
                             check_chunk_marks, question_chunks, MARK_RE,
                             strip_code

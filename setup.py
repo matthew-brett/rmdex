@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-''' Installation script for nbex package '''
+''' Installation script for rmdex package '''
 import re
 
 import setuptools
@@ -23,7 +23,7 @@ requires = [break_ver.sub(r'\1 (\3)', req) for req in install_requires]
 
 cmdclass = versioneer.get_cmdclass()
 
-setup(name='nbex',
+setup(name='rmdex',
       version=versioneer.get_version(),
       cmdclass=cmdclass,
       description='Utilities for processing exercises in notebooks',
@@ -31,10 +31,10 @@ setup(name='nbex',
       author_email='matthew.brett@gmail.com',
       maintainer='Matthew Brett',
       maintainer_email='matthew.brett@gmail.com',
-      url='http://github.com/matthew-brett/nbex',
-      packages=['nbex',
-                'nbex.tests'],
-      package_data = {'nbex': [
+      url='http://github.com/matthew-brett/rmdex',
+      packages=['rmdex',
+                'rmdex.tests'],
+      package_data = {'rmdex': [
           'tests/data/*',
       ]},
       license='BSD license',

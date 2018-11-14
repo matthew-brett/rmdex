@@ -1,4 +1,4 @@
-""" Initialize nbex package
+""" Initialize rmdex package
 """
 
 # Versioneer boilerplate
