@@ -1,2 +1,5 @@
 include versioneer.py
 include rmdex/_version.py
+include README.rst
+include LICENSE
+include *requirements.txt
