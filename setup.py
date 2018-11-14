@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 ''' Installation script for rmdex package '''
 import re
+from os.path import join as pjoin
 
 import setuptools
 from distutils.core import setup
@@ -57,5 +58,6 @@ setup(name='rmdex',
       long_description = open('README.rst', 'rt').read(),
       extras_require = {'test': test_requires},
       # For pip versions >= 9
-      python_requires = '>=3.4'
+      python_requires = '>=3.4',
+      scripts = [pjoin('scripts', 'nbex_check')],
       )
