@@ -19,7 +19,7 @@ MARK_RE = re.compile(r"""^\s*\#-
 
 def question_chunks(nb):
     return [chunk for chunk in nb.chunks
-            if re.search('^\s*#-', chunk.code, re.M)]
+            if re.search(r'^\s*#-', chunk.code, re.M)]
 
 
 def get_marks(code):
