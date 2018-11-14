@@ -26,14 +26,14 @@ def script_test(func):
 
 
 @script_test
-def test_nbex_check():
+def test_rmdex_check():
     with in_dtemp():
-        cmd = ['nbex_check', abspath(SOLUTION_FNAME), 'out.Rmd']
+        cmd = ['rmdex_check', abspath(SOLUTION_FNAME), 'out.Rmd']
         code, stdout, stderr = run_command(cmd)
         with open('out.Rmd') as fobj:
             contents = fobj.read()
         assert contents == EXERCISE_STR
-        cmd = ['nbex_check', '--no-check-marks', abspath(SOLUTION_FNAME),
+        cmd = ['rmdex_check', '--no-check-marks', abspath(SOLUTION_FNAME),
                'out2.Rmd']
         code, stdout, stderr = run_command(cmd)
         with open('out2.Rmd') as fobj:

@@ -60,5 +60,5 @@ setup(name='rmdex',
       extras_require = {'test': test_requires},
       # For pip versions >= 9
       python_requires = '>=3.4',
-      scripts = [pjoin('scripts', 'nbex_check')],
+      scripts = [pjoin('scripts', 'rmdex_check')],
       )
