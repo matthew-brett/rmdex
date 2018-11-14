@@ -32,4 +32,10 @@ def test_nbex_check():
         code, stdout, stderr = run_command(cmd)
         with open('out.Rmd') as fobj:
             contents = fobj.read()
-    assert contents == EXERCISE_STR
+        assert contents == EXERCISE_STR
+        cmd = ['nbex_check', '--no-check-marks', abspath(SOLUTION_FNAME),
+               'out2.Rmd']
+        code, stdout, stderr = run_command(cmd)
+        with open('out2.Rmd') as fobj:
+            contents = fobj.read()
+        assert contents == EXERCISE_STR
