@@ -86,8 +86,6 @@ install:
         pip install -f $EXTRA_WHEELS -r requirements.txt
         python setup.py install
       fi
-    # Install R kernel spec. See: https://irkernel.github.io/docs/IRkernel
-    - Rscript -e "IRkernel::installspec()"
 
 script:
     - |
