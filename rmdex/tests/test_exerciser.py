@@ -7,7 +7,7 @@ import codecs
 from rnbgrader import load, loads
 
 from rmdex.exerciser import (make_check_exercise, make_exercise, get_marks,
-                            solution2exercise, check_exercise,
+                            solution2exercise, check_marks,
                             check_chunk_marks, question_chunks, MARK_RE,
                             strip_code
                            )
@@ -29,8 +29,9 @@ def test_make_check_exercise():
 
 def test_solution2exercise():
     nb = load(SOLUTION_FNAME)
+    check_marks(nb.nb_str)
     exercise = solution2exercise(nb)
-    check_exercise(exercise)
+    check_marks(exercise)
     check_chunk_marks(question_chunks(loads(exercise)))
 
 

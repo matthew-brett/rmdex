@@ -14,7 +14,7 @@
 import codecs
 from argparse import ArgumentParser
 
-from rmdex import make_exercise, check_exercise
+from rmdex import make_exercise, check_marks
 from rnbgrader.nbparser import read_file
 
 
@@ -34,7 +34,7 @@ def main():
     out_fname = args.exercise_rmd
     exercise = make_exercise(read_file(nb_fname))
     if not args.no_check_marks:
-        check_exercise(exercise)
+        check_marks(exercise)
     with codecs.open(out_fname, 'w', encoding='utf8') as fobj:
         fobj.write(exercise)
 

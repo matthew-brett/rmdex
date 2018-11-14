@@ -81,11 +81,11 @@ def make_exercise(solution_str):
     return solution2exercise(nb)
 
 
-def check_exercise(exercise):
-    check_chunk_marks(question_chunks(loads(exercise)))
+def check_marks(nb_str):
+    check_chunk_marks(question_chunks(loads(nb_str)))
 
 
 def make_check_exercise(solution_str):
     exercise = make_exercise(solution_str)
-    check_exercise(exercise)
+    check_marks(exercise)
     return exercise
