@@ -1,7 +1,3 @@
 # Minimum requirements
 #
-numpy>=1.7.1
-Pillow
-pypandoc
-jupyter_client>=5.0.0
-tornado
+rnbgrader
