@@ -29,7 +29,7 @@ matrix:
     # Also need minimums for Pillow
     - python: 3.4
       env:
-        - DEPENDS="rnbgrader==0.1"
+        - DEPENDS="rnbgrader==0.1.1"
     # Check also requirements.txt
     - python: 3.5
       env:
