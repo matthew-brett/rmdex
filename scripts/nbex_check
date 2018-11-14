@@ -1,0 +1,43 @@
+#!python
+# emacs: -*- mode: python-mode; py-indent-offset: 4; indent-tabs-mode: nil -*-
+# vi: set ft=python sts=4 ts=4 sw=4 et:
+""" Check solution, generate exercise
+
+* Get code chunks
+* Filter for presence of #- comments, indicating this is a question.
+* Comments starting #<- should go into exercise without #<-
+* Check that each question has marks recorded.
+* Check that marks add up to given total.
+* Generate exercise, where code has been removed.
+"""
+
+import codecs
+from argparse import ArgumentParser
+
+from nbex import make_exercise, check_exercise
+from rnbgrader.nbparser import read_file
+
+
+def get_parser():
+    parser = ArgumentParser(description='Check solution, generate exercise')
+    parser.add_argument("solution_rmd", help="filename of solution notebook")
+    parser.add_argument("exercise_rmd",
+                        help="filename for output exercise notebook")
+    parser.add_argument("--no-check-marks", action="store_true",
+                        help="Disable checking of mark totals")
+    return parser
+
+
+def main():
+    args = get_parser().parse_args()
+    nb_fname = args.solution_rmd
+    out_fname = args.exercise_rmd
+    exercise = make_exercise(read_file(nb_fname))
+    if not args.no_check_marks:
+        check_exercise(exercise)
+    with codecs.open(out_fname, 'w', encoding='utf8') as fobj:
+        fobj.write(exercise)
+
+
+if __name__ == '__main__':
+    main()
