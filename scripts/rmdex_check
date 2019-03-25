@@ -23,6 +23,7 @@ def get_parser():
     parser.add_argument("solution_rmd", help="filename of solution notebook")
     parser.add_argument("exercise_rmd",
                         help="filename for output exercise notebook")
+    parser.add_argument("--total", type=int, default=100, help="Total marks")
     parser.add_argument("--no-check-marks", action="store_true",
                         help="Disable checking of mark totals")
     return parser
@@ -34,7 +35,7 @@ def main():
     out_fname = args.exercise_rmd
     exercise = make_exercise(read_file(nb_fname))
     if not args.no_check_marks:
-        check_marks(exercise)
+        check_marks(exercise, args.total)
     with codecs.open(out_fname, 'w', encoding='utf8') as fobj:
         fobj.write(exercise)
 

@@ -6,14 +6,16 @@ import re
 from rnbgrader import loads
 from rnbgrader.nbparser import Chunk
 
+class MarkError(RuntimeError): pass
+
 
 MARK_RE = re.compile(r"""^\s*\#-
-                     \s+(\d+)
+                     \s+([0-9.]+)
                      \s+marks
                      \s+/
-                     \s+(\d+)
+                     \s+([0-9.]+)
                      \s+\(total
-                     \s+(\d+)""", re.VERBOSE)
+                     \s+([0-9.]+)""", re.VERBOSE)
 
 
 EX_COMMENT_RE = re.compile(r'^\s*#-', re.M)
@@ -35,15 +37,33 @@ def get_marks(code):
 def check_chunk_marks(question_chunks, total=100):
     running = 0
     for chunk in question_chunks:
-        msg = ' in chunk:\n\n{}\n\nat line {}'.format(
-            chunk.code, chunk.start_line)
+        msg = (f'chunk:\n\n{chunk.code}\n' +
+               f'Chunk starts at line {chunk.start_line}')
         mark, out_of, exp_running = get_marks(chunk.code)
-        assert mark is not None, 'No mark' + msg
-        assert out_of == total, 'Total incorrect' + msg
+        if mark is None:
+            raise MarkError(f'No mark in {msg}')
+        if out_of != total:
+            raise MarkError(f'Total {out_of} should be {total} in {msg}')
         running += mark
-        assert running == exp_running, 'Running total incorrect' + msg
-    assert exp_running == total, 'Grand total {} not the expected {}'.format(
-        exp_running, total)
+        if running != exp_running:
+            raise MarkError(
+                f'Running total {running} incorrect; ' +
+                f'should be {exp_running} in {msg}')
+    if exp_running != total:
+        raise MarkError(f'Grand total {exp_running} but should be {total}')
+
+
+def add_marks(code, total, always=False):
+    if not always and get_marks(code)[0] is not None:
+        return code
+    lines = []
+    in_comments = True
+    for line in code.splitlines(keepends=True):
+        if in_comments and not EX_COMMENT_RE.match(line):
+            lines.append('#-  marks / {} (total  so far)\n'.format(total))
+            in_comments = False
+        lines.append(line)
+    return ''.join(lines)
 
 
 def strip_code(code):
@@ -69,8 +89,12 @@ def replace_chunks(nb_str, chunks):
 
 
 def solution2exercise(nb):
+    return process_questions(nb, strip_code)
+
+
+def process_questions(nb, func):
     chunks = question_chunks(nb)
-    chunks = [Chunk(strip_code(c.code),
+    chunks = [Chunk(func(c.code),
                     c.language,
                     c.start_line,
                     c.end_line)
@@ -79,15 +103,14 @@ def solution2exercise(nb):
 
 
 def make_exercise(solution_str):
-    nb = loads(solution_str)
-    return solution2exercise(nb)
+    return solution2exercise(loads(solution_str))
 
 
-def check_marks(nb_str):
-    check_chunk_marks(question_chunks(loads(nb_str)))
+def check_marks(nb_str, total=100):
+    check_chunk_marks(question_chunks(loads(nb_str)), total)
 
 
-def make_check_exercise(solution_str):
+def make_check_exercise(solution_str, total=100):
     exercise = make_exercise(solution_str)
-    check_marks(exercise)
+    check_marks(exercise, total)
     return exercise
