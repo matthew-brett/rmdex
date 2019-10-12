@@ -1,0 +1,40 @@
+#!python
+# emacs: -*- mode: python-mode; py-indent-offset: 4; indent-tabs-mode: nil -*-
+# vi: set ft=python sts=4 ts=4 sw=4 et:
+""" Add marks to notebook
+"""
+
+import codecs
+from argparse import ArgumentParser
+
+from rmdex.exerciser import process_questions, add_marks
+from rnbgrader.nbparser import read_file
+from rnbgrader import loads
+
+
+def get_parser():
+    parser = ArgumentParser(description='Write mark templates into notebook')
+    parser.add_argument("bare_rmd",
+                        help="filename of notebook without marking notes")
+    parser.add_argument("templated_rmd",
+                        help="filename for output notebook with marking"
+                        "template")
+    parser.add_argument("--total", type=int, default=100, help="Total marks")
+    parser.add_argument("--always", action='store_true',
+                        help="If set, overwrite existing marking notes")
+    return parser
+
+
+def main():
+    args = get_parser().parse_args()
+    nb_fname = args.bare_rmd
+    out_fname = args.templated_rmd
+    nb = loads(read_file(nb_fname))
+    adder = lambda n : add_marks(n, args.total, args.always)
+    templated = process_questions(nb, adder)
+    with codecs.open(out_fname, 'w', encoding='utf8') as fobj:
+        fobj.write(templated)
+
+
+if __name__ == '__main__':
+    main()
