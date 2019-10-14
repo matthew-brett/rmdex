@@ -22,12 +22,12 @@ The comment notation is as follows:
 
 * An *exercise comment* is any comment beginning ``#-``.  These pass
   unmodified to the exercise notebook.
-* An *exercise insertion comment* is any comment beginning ``#<- `` (note
-  space at end).  This signals that all text following the ``#<- `` should go
-  directly into the exercise cell.  It allows the solution to specify template
-  code.
-* Any other code lines, including ordinary comments beginning `#` get stripped
-  from the solution, to form the exercise.
+* An *exercise insertion comment* is any comment beginning ``#<-`` (in fact,
+  there must be a space following).  This signals that all text following the
+  ``#<-`` should go directly into the exercise cell.  It allows the solution
+  to specify template code.
+* Any other code lines, including ordinary comments beginning ``#`` get
+  stripped from the solution, to form the exercise.
 * A *marks comment* is a *exercise comment* of form ``#- 5 marks / 100 (total
   10 marks`` where 5 is the marks for this cell, 100 is the total for the
   whole exercise, and 10 is the total marks if all correct up to this point
