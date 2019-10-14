@@ -2,6 +2,10 @@
 # emacs: -*- mode: python-mode; py-indent-offset: 4; indent-tabs-mode: nil -*-
 # vi: set ft=python sts=4 ts=4 sw=4 et:
 """ Add marks to notebook
+
+Thinking about it, this should look for the first uninterrupted block of #-
+comments, and if these do not include a MARKS_RE mark line, it should insert
+one at the end of the that block.
 """
 
 import codecs
