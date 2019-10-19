@@ -41,7 +41,7 @@ For example, the solution may have a cell like this::
     #- 5 marks / 100 (total 10 marks so far).
     # This comment gets stripped from the exercise version of the cell.
     # Also this one.  The next line adds the text after #<- to the exercise.
-    #<- my_variable <- ...
+    #<- my_variable = ...
     # This comment and the next code line do not appear in the exercise.
     my_variable <- 10
     ```

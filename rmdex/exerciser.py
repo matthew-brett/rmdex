@@ -36,6 +36,7 @@ def get_marks(code):
 
 def check_chunk_marks(question_chunks, total=100):
     running = 0
+    exp_running = 0
     for chunk in question_chunks:
         msg = (f'chunk:\n\n{chunk.code}\n' +
                f'Chunk starts at line {chunk.start_line}')

@@ -5,6 +5,7 @@ from os.path import dirname, join as pjoin
 import codecs
 
 from rnbgrader import load, loads
+from rnbgrader.nbparser import RNotebook
 
 from rmdex.exerciser import (make_check_exercise, make_exercise, get_marks,
                             solution2exercise, check_marks,
@@ -33,6 +34,12 @@ def test_solution2exercise():
     exercise = solution2exercise(nb)
     check_marks(exercise)
     check_chunk_marks(question_chunks(loads(exercise)))
+
+
+def test_null_solution():
+    # A notebook with no question cells doesn't result in an error.
+    nb = RNotebook.from_string('')
+    check_marks(nb.nb_str, 0)
 
 
 def test_check_marks():
