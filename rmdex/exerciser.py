@@ -6,7 +6,12 @@ import re
 from rnbgrader import loads
 from rnbgrader.nbparser import Chunk
 
-class MarkError(RuntimeError): pass
+
+class ExerciseError(RuntimeError): pass
+
+class MarkError(ExerciseError): pass
+
+class MarkupError(ExerciseError): pass
 
 
 MARK_RE = re.compile(r"""^\s*\#-
@@ -68,15 +73,39 @@ def add_marks(code, total, always=False):
 
 
 def strip_code(code):
+    """ Convert `code` marked up for exercise + solution to exercise format.
+
+    Parameters
+    ----------
+    code : str
+        String containing one or more lines of code.
+
+    Returns
+    -------
+    exercise_code : str
+        Code as it will appear in the exercise version.
+    """
     lines = []
+    in_both_section = False
     for line in code.splitlines(keepends=True):
         sline = line.strip()
+        if sline == '#<-':  # Start/end of both-mark
+            in_both_section = not in_both_section
+            continue
+        if in_both_section:
+            lines.append(line)
+            continue
         if not sline.startswith('#'):
             continue
         if sline.startswith('#<- '):
             lines.append(line.replace('#<- ', ''))
+        elif sline.startswith('#<-'):
+            raise MarkupError('There must be a space after the #<- marker '
+                              'unless is it a line on its own')
         elif sline.startswith('#-'):
             lines.append(line)
+    if in_both_section:
+        raise MarkupError('There is a missing #<- marker')
     return ''.join(lines)
 
 

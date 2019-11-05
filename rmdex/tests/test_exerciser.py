@@ -10,9 +10,10 @@ from rnbgrader.nbparser import RNotebook
 from rmdex.exerciser import (make_check_exercise, make_exercise, get_marks,
                             solution2exercise, check_marks,
                             check_chunk_marks, question_chunks, MARK_RE,
-                            strip_code
+                            strip_code, MarkupError
                            )
 
+import pytest
 
 HERE = dirname(__file__)
 SOLUTION_FNAME = pjoin(HERE, 'solution.Rmd')
@@ -65,5 +66,26 @@ def test_strip_code():
     assert strip_code('#- foo\n#<- a = ?\n#- bar') == '#- foo\na = ?\n#- bar'
     assert (strip_code('#- foo\n  #<- a = ?\n#- bar') ==
             '#- foo\n  a = ?\n#- bar')
-
-
+    with pytest.raises(MarkupError):  # No space after #<-
+        strip_code('#- foo\n#<-a = ?\n# bar')
+    with pytest.raises(MarkupError): # No closing #<-
+        strip_code('#- foo\n#<- \n# bar')
+    with pytest.raises(MarkupError):  # No closing #<-
+        strip_code('#- foo\n#<-\n# bar')
+    # With a closing marker - include solution code in exercise.
+    assert (strip_code('#- foo\n#<-\n# bar\na = 1\n#<-\n') ==
+            '#- foo\n# bar\na = 1\n')
+    # Check stuff after both chunk still gets stripped.
+    assert (strip_code(
+        '#- foo\n#<-\n# bar\na = 1\n#<-\nb = 2\n') ==
+        '#- foo\n# bar\na = 1\n')
+    # And that one-line #<- still works.
+    assert (strip_code(
+        '#- foo\n#<-\n# bar\na = 1\n#<-\n#<- b = 2\n') ==
+        '#- foo\n# bar\na = 1\nb = 2\n')
+    # Test a second chunk.
+    assert (strip_code(
+        '#- foo\n#<-\n# bar\na = 1\n#<-\nb = 2\n'
+        '#<-\nc = 2\nd=3\n#<-\ne = 4\n') ==
+        ('#- foo\n# bar\na = 1\n'
+         'c = 2\nd=3\n'))
