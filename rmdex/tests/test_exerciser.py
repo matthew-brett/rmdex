@@ -59,19 +59,19 @@ def test_marks():
 
 
 def test_strip_code():
-    assert strip_code('#- foo\n#- bar') == '#- foo\n#- bar'
-    assert strip_code('#- foo\na = 1\n#- bar') == '#- foo\n#- bar'
+    assert strip_code('#- foo\n#- bar') == '#- foo\n#- bar\n'
+    assert strip_code('#- foo\na = 1\n#- bar') == '#- foo\n#- bar\n'
     assert strip_code('#- foo\na = 1\n# bar') == '#- foo\n'
     assert strip_code('#- foo\n#<- a = ?\n# bar') == '#- foo\na = ?\n'
-    assert strip_code('#- foo\n#<- a = ?\n#- bar') == '#- foo\na = ?\n#- bar'
+    assert strip_code('#- foo\n#<- a = ?\n#- bar') == '#- foo\na = ?\n#- bar\n'
     assert (strip_code('#- foo\n  #<- a = ?\n#- bar') ==
-            '#- foo\n  a = ?\n#- bar')
+            '#- foo\n  a = ?\n#- bar\n')
     with pytest.raises(MarkupError):  # No space after #<-
-        strip_code('#- foo\n#<-a = ?\n# bar')
-    with pytest.raises(MarkupError): # No closing #<-
-        strip_code('#- foo\n#<- \n# bar')
+        strip_code('#- foo\n#<-a = ?\n# bar\n')
+    # With space suffix, marker adds a blank line to the solution.
+    assert strip_code('#- foo\n#<- \n# bar') == '#- foo\n\n'
     with pytest.raises(MarkupError):  # No closing #<-
-        strip_code('#- foo\n#<-\n# bar')
+        strip_code('#- foo\n#<-\n# bar\n')
     # With a closing marker - include solution code in exercise.
     assert (strip_code('#- foo\n#<-\n# bar\na = 1\n#<-\n') ==
             '#- foo\n# bar\na = 1\n')

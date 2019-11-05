@@ -87,8 +87,8 @@ def strip_code(code):
     """
     lines = []
     in_both_section = False
-    for line in code.splitlines(keepends=True):
-        sline = line.strip()
+    for line in code.splitlines():
+        sline = line.lstrip()
         if sline == '#<-':  # Start/end of both-mark
             in_both_section = not in_both_section
             continue
@@ -105,8 +105,8 @@ def strip_code(code):
         elif sline.startswith('#-'):
             lines.append(line)
     if in_both_section:
-        raise MarkupError('There is a missing #<- marker')
-    return ''.join(lines)
+        raise MarkupError('Missing a closing #<- marker')
+    return '\n'.join(lines) + '\n'
 
 
 def replace_chunks(nb_str, chunks):

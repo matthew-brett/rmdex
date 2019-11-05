@@ -22,10 +22,8 @@ The comment notation is as follows:
 
 * An *exercise comment* is any comment beginning ``#-``.  These pass
   unmodified to the exercise notebook.
-* An *exercise insertion comment* is any comment beginning ``#<-`` (in fact,
-  there must be a space following).  This signals that all text following the
-  ``#<-`` should go directly into the exercise cell.  It allows the solution
-  to specify template code.
+* An *exercise insertion comment* is any comment beginning ``#<-``.
+  It can be a line on its own, in which case it indicates that all subsequent lines, up to the next ``#<-`` line, should go into the exercise.  Or it can have a space, followed by further text, in which case the text following will be a line that should not go in the solution, but should go in the exercise.  It allows the solution to specify template code.  If there is no space or new line following the ``#<-``, this is an error.
 * Any other code lines, including ordinary comments beginning ``#`` get
   stripped from the solution, to form the exercise.
 * A *marks comment* is a *exercise comment* of form ``#- 5 marks / 100 (total
@@ -44,6 +42,13 @@ For example, the solution may have a cell like this::
     #<- my_variable = ...
     # This comment and the next code line do not appear in the exercise.
     my_variable <- 10
+    #<-
+    # This comment does appear in the exercise, as well as the following code.
+    another_variable = 11
+    print("Something")
+    #<-
+    # After the closing #<- marker above, we resume normal service.  This and
+    # the next line of comments do not appear in the exercise.
     ```
 
 The solution cell above results in the following in the exercise version::
@@ -53,6 +58,9 @@ The solution cell above results in the following in the exercise version::
     #- More description of the assignment.
     #- 5 marks / 100 (total 10 marks so far).
     my_variable <- ...
+    # This comment does appear in the exercise, as well as the following code.
+    another_variable = 11
+    print("Something")
     ```
 
 The script ``rmdex_check`` reads the solution, checks the mark totals, and
