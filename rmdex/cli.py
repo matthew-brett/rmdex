@@ -1,4 +1,4 @@
-""" Command line interface to RmdEx
+"""Command line interface to RmdEx
 
 * Get code chunks
 * Filter code chunks for presence of #- comments, indicating this is a
@@ -16,7 +16,7 @@
 """
 
 import codecs
-from argparse import ArgumentParser
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 from rmdex import make_exercise, make_solution, check_marks
 from rnbgrader.nbparser import read_file
@@ -29,7 +29,8 @@ CONVERTERS = {
 
 
 def get_parser():
-    parser = ArgumentParser(description='Check solution, generate exercise')
+    parser = ArgumentParser(description=__doc__,
+                            formatter_class=RawDescriptionHelpFormatter)
     parser.add_argument("template_rmd", help="filename of template notebook")
     parser.add_argument("output_rmd", help="filename for output notebook")
     parser.add_argument("--to", default='exercise',
