@@ -30,8 +30,9 @@ def script_test(func):
 @script_test
 def test_rmdex_check():
     script = 'rmdex'
+    soln_fname = abspath(te.SOLUTION_FNAME)
+    template_fname = abspath(te.TEMPLATE_FNAME)
     with in_dtemp():
-        soln_fname = abspath(te.SOLUTION_FNAME)
         cmd = [script, soln_fname, 'out.Rmd']
         code, stdout, stderr = run_command(cmd)
         assert read_file('out.Rmd') == te.EXERCISE_STR
@@ -47,3 +48,14 @@ def test_rmdex_check():
                'out3.Rmd']
         code, stdout, stderr = run_command(cmd)
         assert read_file('out3.Rmd') == te.EXERCISE_STR
+        cmd = [script,
+               template_fname,
+               'out4.Rmd']
+        code, stdout, stderr = run_command(cmd)
+        assert read_file('out4.Rmd') == te.T_EXERCISE_STR
+        cmd = [script,
+               '--to', 'solution',
+               template_fname,
+               'out5.Rmd']
+        code, stdout, stderr = run_command(cmd)
+        assert read_file('out5.Rmd') == te.T_SOLUTION_STR
