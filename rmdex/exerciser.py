@@ -72,7 +72,7 @@ def add_marks(code, total, always=False):
     return ''.join(lines)
 
 
-def strip_code(code):
+def template2exercise(code):
     """ Convert `code` marked up for exercise + solution to exercise format.
 
     Parameters
@@ -118,10 +118,6 @@ def replace_chunks(nb_str, chunks):
     return ''.join(lines)
 
 
-def solution2exercise(nb):
-    return process_questions(nb, strip_code)
-
-
 def process_questions(nb, func):
     chunks = question_chunks(nb)
     chunks = [Chunk(func(c.code),
@@ -132,8 +128,8 @@ def process_questions(nb, func):
     return replace_chunks(nb.nb_str, chunks)
 
 
-def make_exercise(solution_str):
-    return solution2exercise(loads(solution_str))
+def make_exercise(template_str):
+    return process_questions(loads(template_str), template2exercise)
 
 
 def check_marks(nb_str, total=100):

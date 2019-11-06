@@ -8,10 +8,8 @@ from rnbgrader import load, loads
 from rnbgrader.nbparser import RNotebook
 
 from rmdex.exerciser import (make_check_exercise, make_exercise, get_marks,
-                            solution2exercise, check_marks,
-                            check_chunk_marks, question_chunks, MARK_RE,
-                            strip_code, MarkupError
-                           )
+                             check_marks, check_chunk_marks, question_chunks,
+                             MARK_RE, template2exercise, MarkupError)
 
 import pytest
 
@@ -25,14 +23,14 @@ with codecs.open(EXERCISE_FNAME, 'r', encoding='utf8') as _fobj:
 
 
 def test_make_check_exercise():
-    assert make_exercise(SOLUTION_STR) == EXERCISE_STR
     assert make_check_exercise(SOLUTION_STR) == EXERCISE_STR
 
 
-def test_solution2exercise():
+def test_make_exercise():
     nb = load(SOLUTION_FNAME)
     check_marks(nb.nb_str)
-    exercise = solution2exercise(nb)
+    exercise = make_exercise(SOLUTION_STR)
+    assert exercise == EXERCISE_STR
     check_marks(exercise)
     check_chunk_marks(question_chunks(loads(exercise)))
 
@@ -58,33 +56,34 @@ def test_marks():
     assert get_marks('#- 5 marks / 100 (total 95 so far).') == (5, 100, 95)
 
 
-def test_strip_code():
-    assert strip_code('#- foo\n#- bar') == '#- foo\n#- bar\n'
-    assert strip_code('#- foo\na = 1\n#- bar') == '#- foo\n#- bar\n'
-    assert strip_code('#- foo\na = 1\n# bar') == '#- foo\n'
-    assert strip_code('#- foo\n#<- a = ?\n# bar') == '#- foo\na = ?\n'
-    assert strip_code('#- foo\n#<- a = ?\n#- bar') == '#- foo\na = ?\n#- bar\n'
-    assert (strip_code('#- foo\n  #<- a = ?\n#- bar') ==
+def test_template2exercise():
+    t2e = template2exercise
+    assert t2e('#- foo\n#- bar') == '#- foo\n#- bar\n'
+    assert t2e('#- foo\na = 1\n#- bar') == '#- foo\n#- bar\n'
+    assert t2e('#- foo\na = 1\n# bar') == '#- foo\n'
+    assert t2e('#- foo\n#<- a = ?\n# bar') == '#- foo\na = ?\n'
+    assert t2e('#- foo\n#<- a = ?\n#- bar') == '#- foo\na = ?\n#- bar\n'
+    assert (t2e('#- foo\n  #<- a = ?\n#- bar') ==
             '#- foo\n  a = ?\n#- bar\n')
     with pytest.raises(MarkupError):  # No space after #<-
-        strip_code('#- foo\n#<-a = ?\n# bar\n')
+        t2e('#- foo\n#<-a = ?\n# bar\n')
     # With space suffix, marker adds a blank line to the solution.
-    assert strip_code('#- foo\n#<- \n# bar') == '#- foo\n\n'
+    assert t2e('#- foo\n#<- \n# bar') == '#- foo\n\n'
     with pytest.raises(MarkupError):  # No closing #<-
-        strip_code('#- foo\n#<-\n# bar\n')
+        t2e('#- foo\n#<-\n# bar\n')
     # With a closing marker - include solution code in exercise.
-    assert (strip_code('#- foo\n#<-\n# bar\na = 1\n#<-\n') ==
+    assert (t2e('#- foo\n#<-\n# bar\na = 1\n#<-\n') ==
             '#- foo\n# bar\na = 1\n')
     # Check stuff after both chunk still gets stripped.
-    assert (strip_code(
+    assert (t2e(
         '#- foo\n#<-\n# bar\na = 1\n#<-\nb = 2\n') ==
         '#- foo\n# bar\na = 1\n')
     # And that one-line #<- still works.
-    assert (strip_code(
+    assert (t2e(
         '#- foo\n#<-\n# bar\na = 1\n#<-\n#<- b = 2\n') ==
         '#- foo\n# bar\na = 1\nb = 2\n')
     # Test a second chunk.
-    assert (strip_code(
+    assert (t2e(
         '#- foo\n#<-\n# bar\na = 1\n#<-\nb = 2\n'
         '#<-\nc = 2\nd=3\n#<-\ne = 4\n') ==
         ('#- foo\n# bar\na = 1\n'
