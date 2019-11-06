@@ -1,0 +1,103 @@
+---
+jupyter:
+  jupytext:
+    split_at_heading: true
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.1'
+      jupytext_version: 1.2.4
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+# More arrays
+
+This page largely from <https://github.com/data-8/data8assets/blob/gh-pages/materials/su17/hw/hw02/hw02.ipynb> with thanks.
+
+Please complete this notebook by filling in the cells provided. Before you begin, execute the following cell to load the provided tests. Each time you start your server, you will need to execute this cell again to load the tests.
+
+```{python}
+# Don't change this cell; just run it.
+import numpy as np  # The array library.
+import pandas as pd  # A library for working with data tables.
+
+# The OKpy testing system.
+from client.api.notebook import Notebook
+ok = Notebook('more_arrays.ok')
+```
+
+**Important**: The `ok` tests don't always tell you that your answer is correct. More often, they help catch careless mistakes. It's up to you to ensure that your answer is correct. If you're not sure, ask someone (not for the answer, but for some guidance about your approach).
+
+
+Once you're finished, select "Save and Checkpoint" in the File menu.
+
+## Creating Arrays
+
+
+**Question 1.** Make an array called `weird_numbers` containing the following numbers (in the given order):
+
+1. -2
+2. the sine of 1.2
+3. 3
+4. 5 to the power of the cosine of 1.2
+
+*Hint:* `sin` and `cos` are functions in the `np` module.
+
+```{python}
+weird_numbers = ...
+weird_numbers
+```
+
+```{python}
+_ = ok.grade('q2_1')
+```
+
+**Question 2.** Make an array called `book_title_words` containing the following three strings: "Eats", "Shoots", and "and Leaves".
+
+```{python}
+book_title_words = ...
+book_title_words
+```
+
+```{python}
+_ = ok.grade('q2_2')
+```
+
+Strings have a method called `join`.  `join` takes one argument, an array of strings.  It returns a single string.  Specifically, the value of `a_string.join(an_array)` is a single string that's the [concatenation](https://en.wikipedia.org/wiki/Concatenation) ("putting together") of all the strings in `an_array`, **except** `a_string` is inserted in between each string
+
+**Question 3.** Use the array `book_title_words` and the method `join` to make two strings:
+
+1. "Eats Shoots and Leaves" (call this one `without_commas`)
+2. "Eats, Shoots, and Leaves" (call this one `with_commas`)
+
+*Hint:* If you're not sure what `join` does, first try just calling, for example, `"foo".join(book_title_words)` .
+
+```{python}
+without_commas = ...
+with_commas = ...
+# These lines are just to print out your answers.
+print(without_commas)
+print(with_commas)
+```
+
+```{python}
+_ = ok.grade('q2_3')
+```
+
+## 3. Indexing Arrays
+
+
+These exercises give you practice accessing individual elements of arrays.  In Python (and in many programming languages), elements are accessed by *index*, so the first element is the element at index 0.  
+
+
+**Question 1.** The cell below creates an array of some numbers.  Set `third_element` to the third element of `some_numbers`.
+
+```{python}
+some_numbers = np.array([-1, -3, -6, -10, -15])
+
+third_element = ...
+third_element
+```
