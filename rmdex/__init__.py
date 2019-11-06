@@ -7,4 +7,4 @@ __version__ = get_versions()['version']
 del get_versions
 
 
-from .exerciser import make_exercise, check_marks
+from .exerciser import make_exercise, make_solution, check_marks

@@ -33,7 +33,7 @@ def test_rmdex_check():
         with open('out.Rmd') as fobj:
             contents = fobj.read()
         assert contents == EXERCISE_STR
-        cmd = ['rmdex_check', '--no-check-marks', abspath(SOLUTION_FNAME),
+        cmd = ['rmdex_check', '--check-marks', abspath(SOLUTION_FNAME),
                'out2.Rmd']
         code, stdout, stderr = run_command(cmd)
         with open('out2.Rmd') as fobj:
