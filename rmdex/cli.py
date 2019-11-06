@@ -15,11 +15,10 @@
 * Generate exercise or solution, with modified question chunks.
 """
 
-import codecs
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
-from rmdex import make_exercise, make_solution, check_marks
-from rnbgrader.nbparser import read_file
+from rmdex.exerciser import (make_exercise, make_solution, check_marks,
+                             read_utf8, write_utf8)
 
 
 CONVERTERS = {
@@ -49,8 +48,7 @@ def main_func():
     if args.to not in CONVERTERS:
         raise RuntimeError("Converter must be 'exercise' or 'solution' "
                            f"but is '{args.to}'")
-    out_nb = CONVERTERS[args.to](read_file(nb_fname))
+    out_nb = CONVERTERS[args.to](read_utf8(nb_fname))
     if args.check_marks:
         check_marks(out_nb, args.total)
-    with codecs.open(out_fname, 'w', encoding='utf8') as fobj:
-        fobj.write(out_nb)
+    write_utf8(out_fname, out_nb)

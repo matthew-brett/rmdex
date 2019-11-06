@@ -2,6 +2,8 @@
 """
 
 import re
+from functools import partial
+import codecs
 
 from rnbgrader import loads
 from rnbgrader.nbparser import Chunk
@@ -25,6 +27,15 @@ MARK_RE = re.compile(r"""^\s*\#-
 
 EX_COMMENT_RE = re.compile(r'^\s*#<?-', re.M)
 
+
+def read_utf8(fname):
+    with codecs.open(fname, 'r', encoding='utf8') as fobj:
+        return fobj.read()
+
+
+def write_utf8(fname, contents):
+    with codecs.open(fname, 'w', encoding='utf8') as fobj:
+        return fobj.write(contents)
 
 
 def question_chunks(nb):
@@ -145,12 +156,13 @@ def process_questions(nb, func):
     return replace_chunks(nb.nb_str, chunks)
 
 
-def make_exercise(template_str):
-    return process_questions(loads(template_str), template2exercise)
+def make_filtered(template_str, filt_func):
+    return process_questions(loads(template_str), filt_func)
 
 
-def make_solution(template_str):
-    return process_questions(loads(template_str), template2solution)
+make_exercise = partial(make_filtered, filt_func=template2exercise)
+
+make_solution = partial(make_filtered, filt_func=template2solution)
 
 
 def check_marks(nb_str, total=100):

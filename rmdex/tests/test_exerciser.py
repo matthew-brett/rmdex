@@ -2,7 +2,6 @@
 """
 
 from os.path import dirname, join as pjoin
-import codecs
 
 from rnbgrader import load, loads
 from rnbgrader.nbparser import RNotebook
@@ -10,28 +9,23 @@ from rnbgrader.nbparser import RNotebook
 from rmdex.exerciser import (make_check_exercise, make_exercise, make_solution,
                              get_marks, check_marks, check_chunk_marks,
                              question_chunks, MARK_RE, template2exercise,
-                             MarkupError)
+                             MarkupError, read_utf8)
 
 import pytest
-
-
-def _read_utf8(fname):
-    with codecs.open(fname, 'r', encoding='utf8') as fobj:
-        return fobj.read()
 
 
 HERE = dirname(__file__)
 SOLUTION_FNAME = pjoin(HERE, 'solution.Rmd')
 EXERCISE_FNAME = pjoin(HERE, 'exercise.Rmd')
-SOLUTION_STR = _read_utf8(SOLUTION_FNAME)
-EXERCISE_STR = _read_utf8(EXERCISE_FNAME)
+SOLUTION_STR = read_utf8(SOLUTION_FNAME)
+EXERCISE_STR = read_utf8(EXERCISE_FNAME)
 
 TEMPLATE_FNAME = pjoin(HERE, 'template.Rmd')
 T_EXERCISE_FNAME = pjoin(HERE, 'template_exercise.Rmd')
 T_SOLUTION_FNAME = pjoin(HERE, 'template_solution.Rmd')
-TEMPLATE_STR = _read_utf8(TEMPLATE_FNAME)
-T_EXERCISE_STR = _read_utf8(T_EXERCISE_FNAME)
-T_SOLUTION_STR = _read_utf8(T_SOLUTION_FNAME)
+TEMPLATE_STR = read_utf8(TEMPLATE_FNAME)
+T_EXERCISE_STR = read_utf8(T_EXERCISE_FNAME)
+T_SOLUTION_STR = read_utf8(T_SOLUTION_FNAME)
 
 
 def test_make_check_exercise():
