@@ -23,7 +23,7 @@ MARK_RE = re.compile(r"""^\s*\#-
                      \s+([0-9.]+)""", re.VERBOSE)
 
 
-EX_COMMENT_RE = re.compile(r'^\s*#-', re.M)
+EX_COMMENT_RE = re.compile(r'^\s*#<?-', re.M)
 
 
 

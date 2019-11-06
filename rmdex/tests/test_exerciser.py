@@ -35,6 +35,62 @@ def test_make_exercise():
     check_chunk_marks(question_chunks(loads(exercise)))
 
 
+def test_question_chunks():
+    nb = load(SOLUTION_FNAME)
+    chunks = question_chunks(nb)
+    assert len(chunks) == 15
+    nb = loads("""\
+Some text
+
+```{python}
+# Not question
+a = 1
+```
+
+More text.
+
+```{r}
+# Still not question
+b <- 2
+```
+
+Another line of text.
+
+```{r}
+#- This is a question.
+c <- 3
+```
+
+Text.
+
+Continues.
+
+```{python}
+# This is a question too.
+#<- print("hello")
+```
+
+Typing is easy but boring.
+
+```{r}
+# This is not question, again.
+d <- 4
+```
+
+```{python}
+#- This is a question, again.
+e <- 4
+```
+""")
+    chunks = question_chunks(nb)
+    assert len(chunks) == 3
+    assert [c.code for c in chunks] == [
+        '#- This is a question.\nc <- 3\n',
+        '# This is a question too.\n#<- print("hello")\n',
+        '#- This is a question, again.\ne <- 4\n']
+    assert [c.language for c in chunks] == ['r', 'python', 'python']
+
+
 def test_null_solution():
     # A notebook with no question cells doesn't result in an error.
     nb = RNotebook.from_string('')
