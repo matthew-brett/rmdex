@@ -14,7 +14,7 @@ from rnbgrader.tmpdirs import in_dtemp
 from .test_exerciser import SOLUTION_FNAME, EXERCISE_STR
 
 
-runner = ScriptTester('rmdex', win_bin_ext='.bat')
+runner = ScriptTester('rmdex', win_bin_ext='.exe')
 run_command = runner.run_command
 
 

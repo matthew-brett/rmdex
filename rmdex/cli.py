@@ -1,12 +1,13 @@
-#!python
-# emacs: -*- mode: python-mode; py-indent-offset: 4; indent-tabs-mode: nil -*-
-# vi: set ft=python sts=4 ts=4 sw=4 et:
-""" Check solution, generate exercise
+""" Command line interface to RmdEx
 
 * Get code chunks
-* Filter for presence of #- comments, indicating this is a question.
-* Comments starting #<- should go into exercise without #<-
-* Check that each question has marks recorded.
+* Filter code chunks for presence of #- comments, indicating this is a
+  question.  Code chunks #<- comments are also questions.
+* Comments starting #<- (followed by space) should go into exercise without #<-
+* When the whole line is exactly #<- this is a "Both Marker".  It indicates
+  that all lines up to the next Both Marker should go in both exercise and
+  solution.
+* Check that each question has marks recorded, if flag says so to do.
 * Check that marks add up to given total.
 * Generate exercise, where code has been removed.
 """
@@ -29,7 +30,7 @@ def get_parser():
     return parser
 
 
-def main():
+def main_func():
     args = get_parser().parse_args()
     nb_fname = args.solution_rmd
     out_fname = args.exercise_rmd
@@ -38,7 +39,3 @@ def main():
         check_marks(exercise, args.total)
     with codecs.open(out_fname, 'w', encoding='utf8') as fobj:
         fobj.write(exercise)
-
-
-if __name__ == '__main__':
-    main()
