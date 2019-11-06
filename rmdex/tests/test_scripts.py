@@ -9,9 +9,11 @@ from os.path import abspath
 
 from scripttester import ScriptTester
 
+from rnbgrader.nbparser import read_file
+
 from rnbgrader.tmpdirs import in_dtemp
 
-from .test_exerciser import SOLUTION_FNAME, EXERCISE_STR
+from . import test_exerciser as te
 
 
 runner = ScriptTester('rmdex', win_bin_ext='.exe')
@@ -27,15 +29,21 @@ def script_test(func):
 
 @script_test
 def test_rmdex_check():
+    script = 'rmdex'
     with in_dtemp():
-        cmd = ['rmdex_check', abspath(SOLUTION_FNAME), 'out.Rmd']
+        soln_fname = abspath(te.SOLUTION_FNAME)
+        cmd = [script, soln_fname, 'out.Rmd']
         code, stdout, stderr = run_command(cmd)
-        with open('out.Rmd') as fobj:
-            contents = fobj.read()
-        assert contents == EXERCISE_STR
-        cmd = ['rmdex_check', '--check-marks', abspath(SOLUTION_FNAME),
+        assert read_file('out.Rmd') == te.EXERCISE_STR
+        cmd = [script,
+               '--to=exercise',
+               soln_fname,
                'out2.Rmd']
         code, stdout, stderr = run_command(cmd)
-        with open('out2.Rmd') as fobj:
-            contents = fobj.read()
-        assert contents == EXERCISE_STR
+        assert read_file('out2.Rmd') == te.EXERCISE_STR
+        cmd = [script,
+               '--check-marks',
+               soln_fname,
+               'out3.Rmd']
+        code, stdout, stderr = run_command(cmd)
+        assert read_file('out3.Rmd') == te.EXERCISE_STR

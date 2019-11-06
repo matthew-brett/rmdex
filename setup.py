@@ -62,7 +62,7 @@ setup(name='rmdex',
       python_requires = '>=3.6',
       entry_points={
           'console_scripts': [
-              'rmdex_check = rmdex.cli:main_func',
+              'rmdex = rmdex.cli:main_func',
           ],
       }
       )
