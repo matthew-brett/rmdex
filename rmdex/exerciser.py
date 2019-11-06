@@ -109,6 +109,23 @@ def template2exercise(code):
     return '\n'.join(lines) + '\n'
 
 
+def template2solution(code):
+    """ Convert `code` marked up for exercise + solution to solution format.
+
+    Parameters
+    ----------
+    code : str
+        String containing one or more lines of code.
+
+    Returns
+    -------
+    solution_code : str
+        Code as it will appear in the solution version.
+    """
+    lines = [L for L in code.splitlines() if not L.strip().startswith('#<-')]
+    return '\n'.join(lines) + '\n'
+
+
 def replace_chunks(nb_str, chunks):
     lines = nb_str.splitlines(keepends=True)
     for chunk in chunks:
@@ -130,6 +147,10 @@ def process_questions(nb, func):
 
 def make_exercise(template_str):
     return process_questions(loads(template_str), template2exercise)
+
+
+def make_solution(template_str):
+    return process_questions(loads(template_str), template2solution)
 
 
 def check_marks(nb_str, total=100):

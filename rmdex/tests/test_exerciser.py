@@ -7,19 +7,31 @@ import codecs
 from rnbgrader import load, loads
 from rnbgrader.nbparser import RNotebook
 
-from rmdex.exerciser import (make_check_exercise, make_exercise, get_marks,
-                             check_marks, check_chunk_marks, question_chunks,
-                             MARK_RE, template2exercise, MarkupError)
+from rmdex.exerciser import (make_check_exercise, make_exercise, make_solution,
+                             get_marks, check_marks, check_chunk_marks,
+                             question_chunks, MARK_RE, template2exercise,
+                             MarkupError)
 
 import pytest
+
+
+def _read_utf8(fname):
+    with codecs.open(fname, 'r', encoding='utf8') as fobj:
+        return fobj.read()
+
 
 HERE = dirname(__file__)
 SOLUTION_FNAME = pjoin(HERE, 'solution.Rmd')
 EXERCISE_FNAME = pjoin(HERE, 'exercise.Rmd')
-with codecs.open(SOLUTION_FNAME, 'r', encoding='utf8') as _fobj:
-    SOLUTION_STR = _fobj.read()
-with codecs.open(EXERCISE_FNAME, 'r', encoding='utf8') as _fobj:
-    EXERCISE_STR = _fobj.read()
+SOLUTION_STR = _read_utf8(SOLUTION_FNAME)
+EXERCISE_STR = _read_utf8(EXERCISE_FNAME)
+
+TEMPLATE_FNAME = pjoin(HERE, 'template.Rmd')
+T_EXERCISE_FNAME = pjoin(HERE, 'template_exercise.Rmd')
+T_SOLUTION_FNAME = pjoin(HERE, 'template_solution.Rmd')
+TEMPLATE_STR = _read_utf8(TEMPLATE_FNAME)
+T_EXERCISE_STR = _read_utf8(T_EXERCISE_FNAME)
+T_SOLUTION_STR = _read_utf8(T_SOLUTION_FNAME)
 
 
 def test_make_check_exercise():
@@ -33,6 +45,18 @@ def test_make_exercise():
     assert exercise == EXERCISE_STR
     check_marks(exercise)
     check_chunk_marks(question_chunks(loads(exercise)))
+    nb = load(TEMPLATE_FNAME)
+    exercise = make_exercise(TEMPLATE_STR)
+    assert exercise == T_EXERCISE_STR
+
+
+def test_make_solution():
+    # No changes for the basic example (no #<- lines)
+    solution = make_solution(SOLUTION_STR)
+    assert solution == SOLUTION_STR
+    # The Python example does have #<- lines.
+    solution = make_solution(TEMPLATE_STR)
+    assert solution == T_SOLUTION_STR
 
 
 def test_question_chunks():
