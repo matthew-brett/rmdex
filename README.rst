@@ -18,6 +18,11 @@ The main things this library can do are:
 The utility expects the comments in *code cells* to have some extra markup to
 tell it what to do.
 
+It is equally happy processing `R notebooks`_ in RMarkdown_ format, or
+Jupyter_ notebooks saved as RMarkdown, probably using Jupytext_.  You can see
+examples of use on Jupyter notebooks in
+https://github.com/matthew-brett/cfd2019/tree/master/_ok_exercises.
+
 The comment notation is as follows:
 
 * An *exercise comment* is any comment beginning ``#-``.  These pass
@@ -147,10 +152,13 @@ Please put up issues on the `rmdex issue tracker`_.
 .. _rmdex documentation:
     https://matthew-brett.github.com/rmdex/index.html
 .. _documentation: https://matthew-brett.github.com/rmdex
-.. _pandoc: http://pandoc.org
-.. _jupyter: jupyter.org
-.. _homebrew: brew.sh
-.. _sphinx: http://sphinx-doc.org
+.. _pandoc: https://pandoc.org
+.. _jupyter: https://jupyter.org
+.. _RMarkdown: https://rmarkdown.rstudio.com
+.. _R notebooks: https://bookdown.org/yihui/rmarkdown/notebook.html
+.. _Jupytext: https://github.com/mwouts/jupytext
+.. _homebrew: https://brew.sh
+.. _sphinx: https://www.sphinx-doc.org
 .. _rest: http://docutils.sourceforge.net/rst.html
 .. _rmdex issue tracker: https://github.com/matthew-brett/rmdex/issues
 .. _pytest: https://pytest.org
