@@ -112,11 +112,11 @@ def template2exercise(code):
             lines.append(line.replace('#<- ', ''))
         elif sline.startswith('#<-'):
             raise MarkupError('There must be a space after the #<- marker '
-                              'unless is it a line on its own')
+                              'unless is it a line on its own:\n' + code)
         elif sline.startswith('#-'):
             lines.append(line)
     if in_both_section:
-        raise MarkupError('Missing a closing #<- marker')
+        raise MarkupError('Missing a closing #<- marker:\n' + code)
     return '\n'.join(lines) + '\n'
 
 
