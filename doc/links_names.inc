@@ -16,14 +16,16 @@
    http://packages.python.org/an_example_pypi_project/setuptools.html
 
 .. Relevant projects
-.. _pandoc: http://pandoc.org
-.. _jupyter: jupyter.org
-.. _homebrew: brew.sh
-.. _sphinx: http://sphinx-doc.org
+.. _pandoc: https://pandoc.org
+.. _jupyter: https://jupyter.org
+.. _RMarkdown: https://rmarkdown.rstudio.com
+.. _R notebooks: https://bookdown.org/yihui/rmarkdown/notebook.html
+.. _Jupytext: https://github.com/mwouts/jupytext
+.. _homebrew: https://brew.sh
+.. _sphinx: https://www.sphinx-doc.org
 .. _rest: http://docutils.sourceforge.net/rst.html
 .. _`Sphinx reST`: http://sphinx.pocoo.org/rest.html
 .. _reST: http://docutils.sourceforge.net/rst.html
-.. _matplotlib plot directive: http://matplotlib.org/sampledoc/extensions.html
 .. _nbconvert: http://nbconvert.readthedocs.org/en/latest/
 .. _ipython: http://ipython.org/
 .. _docutils: http://docutils.sourceforge.net
