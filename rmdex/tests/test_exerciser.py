@@ -2,6 +2,7 @@
 """
 
 from os.path import dirname, join as pjoin
+from textwrap import dedent
 
 from rnbgrader import load, loads
 from rnbgrader.nbparser import RNotebook
@@ -162,3 +163,62 @@ def test_template2exercise():
         '#<-\nc = 2\nd=3\n#<-\ne = 4\n') ==
         ('#- foo\n# bar\na = 1\n'
          'c = 2\nd=3\n'))
+    # Test both-line
+    assert t2e('#- foo\n#<--\na = 1\n#- bar') == '#- foo\na = 1\n#- bar\n'
+    assert (t2e('#- foo\n#<--\na = 1\n#- bar\n#<--\n# baz') ==
+            '#- foo\na = 1\n#- bar\n# baz\n')
+    # Test both-line error
+    with pytest.raises(MarkupError):
+        t2e('#- foo\n#<--\na = 1\n#- bar\n#<--')
+    # Mix both-line and both-section
+    assert (t2e(
+        '#- foo\n#<--\nq = 99\n#<-\n# bar\na = 1\n#<-\nb = 2\n'
+        '#<-\nc = 2\nd=3\n#<-\ne = 4\n') ==
+        '#- foo\nq = 99\n# bar\na = 1\nc = 2\nd=3\n')
+    # both-line ignored inside both-section
+    assert (t2e(
+        '#- foo\n#<-\n#<--\n# bar\na = 1\n#<-\nb = 2\n'
+        '#<-\nc = 2\nd=3\n#<-\ne = 4\n') ==
+        '#- foo\n#<--\n# bar\na = 1\nc = 2\nd=3\n')
+    # both-section ignored after both-line
+    with pytest.raises(MarkupError):
+        t2e('#- foo\n#<--#<-\n# bar\na = 1\n<-\nb = 2\n'
+            '#<-\nc = 2\nd=3\n#<-\ne = 4\n')
+    assert (t2e(
+        '#- foo\n#<--\n#<-\n# bar\na = 1\nb = 2\n'
+        '#<-\nc = 2\nd=3\n#<-\ne = 4\n') ==
+        '#- foo\n#<-\nc = 2\nd=3\n')
+
+
+def test_readme_example():
+    inp_str = dedent("""
+    #- Here you will do a simple assignment.
+    #- More description of the assignment.
+    #- 5 marks / 100 (total 10 marks so far).
+    # This comment gets stripped from the exercise version of the cell.
+    # Also this one.  The next line adds the text after #<- to the exercise.
+    #<- my_variable = ...
+    # This comment and the next code line do not appear in the exercise.
+    my_variable = 10
+    #<-
+    # This comment does appear in the exercise, as well as the following code.
+    another_variable = 11
+    print("Something")
+    #<-
+    #<--
+    # This line follows the both-line marker, and appears in the exercise.
+    # This line does not.
+    # Starting at the previous line, we resume normal service.  This and
+    # the next line of comments do not appear in the exercise.
+    """)
+    exp_str = dedent("""
+    #- Here you will do a simple assignment.
+    #- More description of the assignment.
+    #- 5 marks / 100 (total 10 marks so far).
+    my_variable = ...
+    # This comment does appear in the exercise, as well as the following code.
+    another_variable = 11
+    print("Something")
+    # This line follows the both-line marker, and appears in the exercise.
+    """)
+    assert template2exercise(inp_str).strip() == exp_str.strip()

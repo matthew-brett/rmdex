@@ -21,11 +21,24 @@ tell it what to do.
 The comment notation is as follows:
 
 * An *exercise comment* is any comment beginning ``#-``.  These pass
-  unmodified to the exercise notebook.
-* An *exercise insertion comment* is any comment beginning ``#<-``.
-  It can be a line on its own, in which case it indicates that all subsequent lines, up to the next ``#<-`` line, should go into the exercise.  Or it can have a space, followed by further text, in which case the text following will be a line that should not go in the solution, but should go in the exercise.  It allows the solution to specify template code.  If there is no space or new line following the ``#<-``, this is an error.
+  unmodified to the exercise and solution notebooks.
+* An *exercise insertion comment* is any comment beginning ``#<-`` *followed
+  by a space*. The text following will be a line that should not go in the
+  solution, but should go in the exercise.  It allows the template to suggest
+  code to the user, that will not appear in the solution, without
+  modification.  The code after this mark need not be valid syntax.
+* A *both-section marker* is a line consisting of ``#<-`` *followed
+  immediately by a new line character*. This indicates that all subsequent
+  lines, up to the next ``#<-`` line (both-section marker), should go into the
+  exercise and the solution.
+* A *both-line marker* is a line consisting of ``#<--`` *followed immediately
+  by a new line character*.  The next line only goes into the solution and the
+  exercise.
+* If any character other than space, a new line, or a ``-`` follows ``#<-`` at
+  the beginning of a line, this is an error.
 * Any other code lines, including ordinary comments beginning ``#`` get
-  stripped from the solution, to form the exercise.
+  stripped from the template, to form the exercise.  They do appear in the
+  solution.
 * A *marks comment* is a *exercise comment* of form ``#- 5 marks / 100 (total
   10 marks`` where 5 is the marks for this cell, 100 is the total for the
   whole exercise, and 10 is the total marks if all correct up to this point
@@ -41,13 +54,16 @@ For example, the solution may have a cell like this::
     # Also this one.  The next line adds the text after #<- to the exercise.
     #<- my_variable = ...
     # This comment and the next code line do not appear in the exercise.
-    my_variable <- 10
+    my_variable = 10
     #<-
     # This comment does appear in the exercise, as well as the following code.
     another_variable = 11
     print("Something")
     #<-
-    # After the closing #<- marker above, we resume normal service.  This and
+    #<--
+    # This line follows the both-line marker, and appears in the exercise.
+    # This line does not.
+    # Starting at the previous line, we resume normal service.  This and
     # the next line of comments do not appear in the exercise.
     ```
 
@@ -57,10 +73,11 @@ The solution cell above results in the following in the exercise version::
     #- Here you will do a simple assignment.
     #- More description of the assignment.
     #- 5 marks / 100 (total 10 marks so far).
-    my_variable <- ...
+    my_variable = ...
     # This comment does appear in the exercise, as well as the following code.
     another_variable = 11
     print("Something")
+    # This line follows the both-line marker, and appears in the exercise.
     ```
 
 The script ``rmdex_check`` reads the solution, checks the mark totals, and
