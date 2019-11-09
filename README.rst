@@ -1,6 +1,6 @@
-###################################################################
-rmdex - utilities for generating and checking Rmd notebook exercises
-###################################################################
+####################################################################
+Rmdex - utilities for generating and checking Rmd notebook exercises
+####################################################################
 
 .. shared-text-body
 
@@ -10,8 +10,8 @@ Quickstart
 
 The main things this library can do are:
 
-* generate an exercise notebook from a solution notebook, given some markup in
-  the comments of the solution notebook, and
+* generate an exercise notebook and a solution notebook from a template
+  notebook, given some markup in the comments of the template notebook, and
 * check mark totals specified in the comments, to make sure they add up
   correctly.
 
@@ -44,7 +44,7 @@ The comment notation is as follows:
   whole exercise, and 10 is the total marks if all correct up to this point
   (including this cell).
 
-For example, the solution may have a cell like this::
+For example, the template may have a cell like this::
 
     ```{r}
     #- Here you will do a simple assignment.
@@ -67,7 +67,7 @@ For example, the solution may have a cell like this::
     # the next line of comments do not appear in the exercise.
     ```
 
-The solution cell above results in the following in the exercise version::
+The template cell above results in the following in the exercise version::
 
     ```{r}
     #- Here you will do a simple assignment.
@@ -80,8 +80,25 @@ The solution cell above results in the following in the exercise version::
     # This line follows the both-line marker, and appears in the exercise.
     ```
 
-The script ``rmdex_check`` reads the solution, checks the mark totals, and
-generates the exercise.
+The script ``rmdex`` reads the templates, checks the mark totals (with the
+option ``--check-marks``), and generates the exercise.  It can also generate the solution.  Here are some examples of use:
+
+.. code-block:: console
+
+    # Generate the exercise from the template.
+    rmdex template_notebook.Rmd exercise_notebook.Rmd
+
+    # Generate the exercise and solution from the template.
+    rmdex template_notebook.Rmd exercise_notebook.Rmd solution_notebook.Rmd
+
+    # Check the marks total in the exercise, but do not write the exercise.
+    rmdex --check-marks template_notebook.Rmd
+
+    # Check the marks total in the exercise, and write the exercise.
+    rmdex --check-marks template_notebook.Rmd exercise_notebook.Rmd
+
+    # Write the solution only.
+    rmdex template_notebook.Rmd _ solution_notebook.Rmd
 
 ************
 Installation
@@ -116,7 +133,7 @@ Tests
 
 * Run the tests with::
 
-    py.test rmdex
+    pytest rmdex
 
 *******
 Support

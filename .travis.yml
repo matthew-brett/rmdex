@@ -19,6 +19,7 @@ dist: xenial
 python:
     - 3.6
     - 3.7
+    - 3.8
 
 matrix:
   include:
@@ -111,7 +112,7 @@ script:
         if [ -n "$DOCTESTS" ]; then
           DOCTEST_ARGS="--doctest-modules"
         fi
-        py.test $COVER_ARGS $DOCTEST_ARGS ../$PKG_NAME
+        pytest $COVER_ARGS $DOCTEST_ARGS ../$PKG_NAME
       fi
 
 after_success:
