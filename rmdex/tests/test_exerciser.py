@@ -28,6 +28,12 @@ TEMPLATE_STR = read_utf8(TEMPLATE_FNAME)
 T_EXERCISE_STR = read_utf8(T_EXERCISE_FNAME)
 T_SOLUTION_STR = read_utf8(T_SOLUTION_FNAME)
 
+FMFT_FNAME = pjoin(HERE, 'fix_my_fors_template.Rmd')
+FMFE_FNAME = pjoin(HERE, 'fix_my_fors.Rmd')
+FMFS_FNAME = pjoin(HERE, 'fix_my_fors_solution.Rmd')
+FMFT_STR = read_utf8(FMFT_FNAME)
+FMFE_STR = read_utf8(FMFE_FNAME)
+FMFS_STR = read_utf8(FMFS_FNAME)
 
 def test_make_check_exercise():
     assert make_check_exercise(SOLUTION_STR) == EXERCISE_STR
@@ -43,6 +49,9 @@ def test_make_exercise():
     nb = load(TEMPLATE_FNAME)
     exercise = make_exercise(TEMPLATE_STR)
     assert exercise == T_EXERCISE_STR
+    nb = load(FMFT_FNAME)
+    exercise = make_exercise(FMFT_STR)
+    assert exercise == FMFE_STR
 
 
 def test_make_solution():
@@ -52,6 +61,8 @@ def test_make_solution():
     # The Python example does have #<- lines.
     solution = make_solution(TEMPLATE_STR)
     assert solution == T_SOLUTION_STR
+    solution = make_solution(FMFT_STR)
+    assert solution == FMFS_STR
 
 
 def test_question_chunks():
