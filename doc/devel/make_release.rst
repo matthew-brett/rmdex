@@ -1,6 +1,6 @@
-###################
-Releasing rmdex
-###################
+###############
+Releasing Rmdex
+###############
 
 * Review the open list of `rmdex issues`_.  Check whether there are
   outstanding issues that can be closed, and whether there are any issues that

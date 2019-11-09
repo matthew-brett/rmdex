@@ -118,7 +118,7 @@ Released under the BSD two-clause license - see the file ``LICENSE`` in the
 source distribution.
 
 `travis-ci <https://travis-ci.org/matthew-brett/rmdex>`_ kindly tests the code
-automatically under Python versions 3.4 through 3.6.
+automatically under Python versions 3.6 through 3.8.
 
 The latest released version is at https://pypi.python.org/pypi/rmdex
 
@@ -154,4 +154,3 @@ Please put up issues on the `rmdex issue tracker`_.
 .. _rest: http://docutils.sourceforge.net/rst.html
 .. _rmdex issue tracker: https://github.com/matthew-brett/rmdex/issues
 .. _pytest: https://pytest.org
-.. _mock: https://github.com/testing-cabal/mock
