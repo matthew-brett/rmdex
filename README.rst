@@ -27,7 +27,8 @@ The comment notation is as follows:
 
 * An exercise cell (Jupyter) or chunk (R notebook) is any cell / chunk with an
   comment starting ``#-`` (an exercise comment) or starting ``#<-`` (see
-  below).
+  below). Rmdex will only modify exercise cells / chunks in the output exercise
+  and solution.
 * An *exercise comment* is any comment beginning ``#-``.  These pass
   unmodified to the exercise and solution notebooks.
 * An *exercise insertion comment* is any comment beginning ``#<-`` *followed
@@ -52,9 +53,6 @@ The comment notation is as follows:
   to this point (including this cell).  You can use the ``--check-marks``
   option to the main ``rmdex`` utility to check the consistency of these
   numbers (see below).
-
-Rmdex will only modify exercise cells / chunks in the output exercise and
-solution.
 
 For example, the template may have a cell like this::
 
