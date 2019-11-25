@@ -10,7 +10,7 @@ from rnbgrader.nbparser import RNotebook
 from rmdex.exerciser import (make_check_exercise, make_exercise, make_solution,
                              get_marks, check_marks, check_chunk_marks,
                              question_chunks, MARK_RE, template2exercise,
-                             MarkupError, read_utf8)
+                             template2solution, MarkupError, read_utf8)
 
 import pytest
 
@@ -233,3 +233,20 @@ def test_readme_example():
     # This line follows the both-line marker, and appears in the exercise.
     """)
     assert template2exercise(inp_str).strip() == exp_str.strip()
+    exp_soln_str = dedent("""
+    #- Here you will do a simple assignment.
+    #- More description of the assignment.
+    #- 5 marks / 100 (total 10 marks so far).
+    # This comment gets stripped from the exercise version of the cell.
+    # Also this one.  The next line adds the text after #<- to the exercise.
+    # This comment and the next code line do not appear in the exercise.
+    my_variable = 10
+    # This comment does appear in the exercise, as well as the following code.
+    another_variable = 11
+    print("Something")
+    # This line follows the both-line marker, and appears in the exercise.
+    # This line does not.
+    # Starting at the previous line, we resume normal service.  This and
+    # the next line of comments do not appear in the exercise.
+    """)
+    assert template2solution(inp_str).strip() == exp_soln_str.strip()

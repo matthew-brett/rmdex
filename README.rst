@@ -25,29 +25,36 @@ https://github.com/matthew-brett/cfd2019/tree/master/_ok_exercises.
 
 The comment notation is as follows:
 
+* An exercise cell (Jupyter) or chunk (R notebook) is any cell / chunk with an
+  comment starting ``#-`` (an exercise comment) or starting ``#<-`` (see
+  below).
 * An *exercise comment* is any comment beginning ``#-``.  These pass
   unmodified to the exercise and solution notebooks.
 * An *exercise insertion comment* is any comment beginning ``#<-`` *followed
   by a space*. The text following will be a line that should not go in the
   solution, but should go in the exercise.  It allows the template to suggest
-  code to the user, that will not appear in the solution, without
-  modification.  The code after this mark need not be valid syntax.
+  code to the user, that will not appear in the solution. The code after this
+  mark need not be valid syntax.
 * A *both-section marker* is a line consisting of ``#<-`` *followed
   immediately by a new line character*. This indicates that all subsequent
   lines, up to the next ``#<-`` line (both-section marker), should go into the
   exercise and the solution.
 * A *both-line marker* is a line consisting of ``#<--`` *followed immediately
-  by a new line character*.  The next line only goes into the solution and the
+  by a new line character*.  The next line goes into the solution and the
   exercise.
-* If any character other than space, a new line, or a ``-`` follows ``#<-`` at
-  the beginning of a line, this is an error.
-* Any other code lines, including ordinary comments beginning ``#`` get
-  stripped from the template, to form the exercise.  They do appear in the
-  solution.
+* If there is any line starting ``#<-`` and followed by anything other than
+  space, a new line, or a ``-``, this is an error.
+* Any other code lines, including ordinary comments beginning ``#``, get
+  stripped from the exercise.  They do appear in the solution.
 * A *marks comment* is a *exercise comment* of form ``#- 5 marks / 100 (total
-  10 marks`` where 5 is the marks for this cell, 100 is the total for the
-  whole exercise, and 10 is the total marks if all correct up to this point
-  (including this cell).
+  10 marks so far)`` where 5 is the marks for this cell, 100 is the total for
+  the whole exercise, and 10 is the total marks if all answers are correct up
+  to this point (including this cell).  You can use the ``--check-marks``
+  option to the main ``rmdex`` utility to check the consistency of these
+  numbers (see below).
+
+Rmdex will only modify exercise cells / chunks in the output exercise and
+solution.
 
 For example, the template may have a cell like this::
 
@@ -83,6 +90,25 @@ The template cell above results in the following in the exercise version::
     another_variable = 11
     print("Something")
     # This line follows the both-line marker, and appears in the exercise.
+    ```
+
+The solution will have::
+
+    ```{r}
+    #- Here you will do a simple assignment.
+    #- More description of the assignment.
+    #- 5 marks / 100 (total 10 marks so far).
+    # This comment gets stripped from the exercise version of the cell.
+    # Also this one.  The next line adds the text after #<- to the exercise.
+    # This comment and the next code line do not appear in the exercise.
+    my_variable = 10
+    # This comment does appear in the exercise, as well as the following code.
+    another_variable = 11
+    print("Something")
+    # This line follows the both-line marker, and appears in the exercise.
+    # This line does not.
+    # Starting at the previous line, we resume normal service.  This and
+    # the next line of comments do not appear in the exercise.
     ```
 
 The script ``rmdex`` reads the templates, checks the mark totals (with the
