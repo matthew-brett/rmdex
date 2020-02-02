@@ -108,15 +108,19 @@ def template2exercise(code):
         if state == 'both-section':
             if is_both_mark:
                 state = 'default'
-            else:
-                lines.append(line)
+                continue
+        if state in ('both-section', 'both-to-end'):
+            lines.append(line)
             continue
         # Must be default state
         assert state == 'default'
         if is_both_mark:
             state = 'both-section'
             continue
-        if sline == '#<--':  # both-line marker - next line ex + solution.
+        if sline == '#<->':  # both-to-end marker
+            state = 'both-to-end'
+            continue
+        elif sline == '#<--':  # both-line marker - next line ex + solution.
             state = 'both-line'
             continue
         if not sline.startswith('#'):

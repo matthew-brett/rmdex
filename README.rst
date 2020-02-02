@@ -75,6 +75,12 @@ For example, the template may have a cell like this::
     # This line does not.
     # Starting at the previous line, we resume normal service.  This and
     # the next line of comments do not appear in the exercise.
+    #
+    # The following marker causes everything to the end of the cell/chunk
+    # to appear in both exercise and solution:
+    #<->
+    print('This line appears in the exercise and solution')
+    print('as does this line')
     ```
 
 The template cell above results in the following in the exercise version::
@@ -88,6 +94,8 @@ The template cell above results in the following in the exercise version::
     another_variable = 11
     print("Something")
     # This line follows the both-line marker, and appears in the exercise.
+    print('This line appears in the exercise and solution')
+    print('as does this line')
     ```
 
 The solution will have::
@@ -107,6 +115,11 @@ The solution will have::
     # This line does not.
     # Starting at the previous line, we resume normal service.  This and
     # the next line of comments do not appear in the exercise.
+    #
+    # The following marker causes everything to the end of the cell/chunk
+    # to appear in both exercise and solution:
+    print('This line appears in the exercise and solution')
+    print('as does this line')
     ```
 
 The script ``rmdex`` reads the templates, checks the mark totals (with the

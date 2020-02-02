@@ -199,6 +199,10 @@ def test_template2exercise():
         '#- foo\n#<--\n#<-\n# bar\na = 1\nb = 2\n'
         '#<-\nc = 2\nd=3\n#<-\ne = 4\n') ==
         '#- foo\n#<-\nc = 2\nd=3\n')
+    # Both to end marker - everything included
+    assert (t2e(
+        '#- foo\n#<->\n#<- ...\n# bar\na = 1\nb = 2\n') ==
+        '#- foo\n#<- ...\n# bar\na = 1\nb = 2\n')
 
 
 def test_readme_example():
@@ -221,6 +225,12 @@ def test_readme_example():
     # This line does not.
     # Starting at the previous line, we resume normal service.  This and
     # the next line of comments do not appear in the exercise.
+    #
+    # The following marker causes everything to the end of the cell/chunk
+    # to appear in both exercise and solution:
+    #<->
+    print('This line appears in the exercise and solution')
+    print('as does this line')
     """)
     exp_str = dedent("""
     #- Here you will do a simple assignment.
@@ -231,6 +241,8 @@ def test_readme_example():
     another_variable = 11
     print("Something")
     # This line follows the both-line marker, and appears in the exercise.
+    print('This line appears in the exercise and solution')
+    print('as does this line')
     """)
     assert template2exercise(inp_str).strip() == exp_str.strip()
     exp_soln_str = dedent("""
@@ -248,5 +260,10 @@ def test_readme_example():
     # This line does not.
     # Starting at the previous line, we resume normal service.  This and
     # the next line of comments do not appear in the exercise.
+    #
+    # The following marker causes everything to the end of the cell/chunk
+    # to appear in both exercise and solution:
+    print('This line appears in the exercise and solution')
+    print('as does this line')
     """)
     assert template2solution(inp_str).strip() == exp_soln_str.strip()
