@@ -167,6 +167,18 @@ def replace_chunks(nb_str, chunks):
 
 
 def process_questions(nb, func):
+    """ Process question chunks in notebook `mb`, with function `func`
+
+    Parameters
+    ----------
+    mb : :class:`RNotebook`
+    func : callable
+
+    Returns
+    -------
+    nb_str : str
+        Notebook in RMarkdown string form.
+    """
     chunks = question_chunks(nb)
     chunks = [Chunk(func(c.code),
                     c.language,
@@ -176,11 +188,53 @@ def process_questions(nb, func):
     return replace_chunks(nb.nb_str, chunks)
 
 
-def make_filtered(template_str, filt_func):
-    return process_questions(loads(template_str), filt_func)
+def strip_model_answers(nb_str):
+    """ Strip model answers from manual grading questions
+
+    Parameters
+    ----------
+    nb_str : str
+        Text of notebook
+
+    Returns
+    -------
+    mod_str : str
+        Maybe modified text of notebook
+
+    Notes
+    -----
+    Looks for model answers of form::
+
+        <!-- #region {"manual_grade": true, "manual_problem_id": "my_q"} -->
+        This is a model answer that the students should not see
+        <!-- #endregion -->
+
+    and replaces to give::
+
+        <!-- #region {"manual_grade": true, "manual_problem_id": "my_q"} -->
+        *Write your answer here, replacing this text.*
+        <!-- #endregion -->
+    """
+    return re.sub(r'''\
+(<!--\s*#region\*{["']manual_grade["']\s*:\s*true,.*}\s -->)\s*$
+(.*?)$
+<!-- #endregion -->$''',
+                    '\1\n*Write your answer here, replacing this text.*\n\3',
+                    nb_str,
+                    flags=re.M | re.S)
 
 
-make_exercise = partial(make_filtered, filt_func=template2exercise)
+def make_filtered(template_str, filt_func=None, str_filt_func=None):
+    out_nb = loads(template_str)
+    if filt_func:
+        out_nb_str = process_questions(out_nb, filt_func)
+    if str_filt_func:
+        out_nb_str = str_filt_func(out_nb_str)
+    return out_nb
+
+
+make_exercise = partial(make_filtered, filt_func=template2exercise,
+                        str_filt_func=strip_model_answers)
 
 make_solution = partial(make_filtered, filt_func=template2solution)
 
