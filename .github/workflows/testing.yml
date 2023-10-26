@@ -25,6 +25,7 @@ jobs:
       - name: Install test dependencies
         run: |
           pip install -r test-requirements.txt
+          pip install pytest-cov
       - name: Install rmdex
         run: |
           pip install .
