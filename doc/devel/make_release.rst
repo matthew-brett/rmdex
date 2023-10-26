@@ -42,8 +42,8 @@ Releasing Rmdex
     username:your.pypi.username
     password:your-password
 
-* Once everything looks good, tag the release.  This will also set the version
-  (we are using versioneer_ to manage versions via git tags)::
+* Once everything looks good, edit the version number in `rmdex/__init__.py`,
+  and tag the release::
 
     git tag -s 0.3
 

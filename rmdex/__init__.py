@@ -1,9 +1,7 @@
 """ Initialize rmdex package
 """
 
-# Versioneer boilerplate
-from . import _version
-__version__ = _version.get_versions()['version']
+__version__ = "0.3a1"
 
 
 from .exerciser import make_exercise, make_solution, check_marks
