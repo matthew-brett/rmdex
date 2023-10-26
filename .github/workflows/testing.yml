@@ -16,7 +16,7 @@ jobs:
           python-version: "3.x"
       - name: Install test dependencies
         run: |
-          pip install -r test-requirements
+          pip install -r test-requirements.txt
       - name: Install rmdex
         run: |
           pip install .
