@@ -188,13 +188,25 @@ def process_questions(nb, func):
     return replace_chunks(nb.nb_str, chunks)
 
 
-def strip_model_answers(nb_str):
+MODEL_ANSWER_RE = re.compile(r"""
+(?P<header>
+^\s*<!--\s*\#region\s*{["']manual_grade["']\s*:\s*true,.*?}\s*-->)
+\s*$
+(?P<model_answer>.*?)
+(?P<footer>
+^\s*<!--\s*\#endregion\s*-->)$""", flags=re.M | re.S | re.VERBOSE)
+
+
+def strip_model_answers(
+    nb_str,
+    replacement='*Write your answer here, replacing this text.*'):
     """ Strip model answers from manual grading questions
 
     Parameters
     ----------
     nb_str : str
         Text of notebook
+    replacement : str, optional
 
     Returns
     -------
@@ -215,13 +227,9 @@ def strip_model_answers(nb_str):
         *Write your answer here, replacing this text.*
         <!-- #endregion -->
     """
-    return re.sub(r'''\
-(<!--\s*#region\*{["']manual_grade["']\s*:\s*true,.*}\s -->)\s*$
-(.*?)$
-<!-- #endregion -->$''',
-                    '\1\n*Write your answer here, replacing this text.*\n\3',
-                    nb_str,
-                    flags=re.M | re.S)
+    return MODEL_ANSWER_RE.sub(
+                    rf'\g<header>\n{replacement}\n\g<footer>',
+                    nb_str)
 
 
 def make_filtered(template_str, q_filt_func=None, str_filt_func=None):
@@ -242,8 +250,8 @@ def make_filtered(template_str, q_filt_func=None, str_filt_func=None):
         Filtered notebook text.
     """
     out_nb = loads(template_str)
-    if q_filt_func:
-        out_nb_str = process_questions(out_nb, q_filt_func)
+    q_filt_func = (lambda x : x) if q_filt_func is None else q_filt_func
+    out_nb_str = process_questions(out_nb, q_filt_func)
     if str_filt_func:
         out_nb_str = str_filt_func(out_nb_str)
     return out_nb_str

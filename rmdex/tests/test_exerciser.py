@@ -8,6 +8,7 @@ from rnbgrader import load, loads
 from rnbgrader.nbparser import RNotebook
 
 from rmdex.exerciser import (make_check_exercise, make_exercise, make_solution,
+                             strip_model_answers, make_filtered,
                              get_marks, check_marks, check_chunk_marks,
                              question_chunks, MARK_RE, template2exercise,
                              template2solution, MarkupError, read_utf8)
@@ -34,6 +35,7 @@ FMFS_FNAME = pjoin(HERE, 'fix_my_fors_solution.Rmd')
 FMFT_STR = read_utf8(FMFT_FNAME)
 FMFE_STR = read_utf8(FMFE_FNAME)
 FMFS_STR = read_utf8(FMFS_FNAME)
+
 
 def test_make_check_exercise():
     assert make_check_exercise(SOLUTION_STR) == EXERCISE_STR
@@ -267,3 +269,87 @@ def test_readme_example():
     print('as does this line')
     """)
     assert template2solution(inp_str).strip() == exp_soln_str.strip()
+
+
+def test_filter_str():
+    inp_str = dedent("""
+    Some text.
+
+    <!-- #region {"manual_grade": true, "manual_problem_id": "my_q"} -->
+    This is a model answer that the students should not see.
+
+    It can run across many lines.
+
+    And have several paragraphs.
+    <!-- #endregion -->
+
+    More text.
+    """)
+    exp_str = dedent("""
+    Some text.
+
+    <!-- #region {"manual_grade": true, "manual_problem_id": "my_q"} -->
+    *Write your answer here, replacing this text.*
+    <!-- #endregion -->
+
+    More text.
+    """)
+    assert strip_model_answers(inp_str) == exp_str
+    assert (strip_model_answers(inp_str, 'Other text') ==
+            exp_str.replace('*Write your answer here, replacing this text.*',
+                            'Other text'))
+    assert (make_filtered(inp_str, str_filt_func=strip_model_answers) ==
+            exp_str)
+    inp_str = dedent("""
+    Some text.
+
+    ```{python}
+    #- This comment appears.
+    #<- my_variable = ...
+    my_variable = 10
+    ```
+
+    <!-- #region {"manual_grade": true, "manual_problem_id": "my_q"} -->
+    Another model answer.
+    <!-- #endregion -->
+
+    More text.
+
+    ```{python}
+    #- This does.
+    # This does not.
+    another_variable = 10
+    ```
+
+    <!-- #region {"manual_grade": true, "manual_problem_id" : "my_q2"} -->
+    Further answer.
+    <!-- #endregion -->
+
+    """)
+    exp_str = dedent("""
+    Some text.
+
+    ```{python}
+    #- This comment appears.
+    my_variable = ...
+    ```
+
+    <!-- #region {"manual_grade": true, "manual_problem_id": "my_q"} -->
+    *Write your answer here, replacing this text.*
+    <!-- #endregion -->
+
+    More text.
+
+    ```{python}
+    #- This does.
+    ```
+
+    <!-- #region {"manual_grade": true, "manual_problem_id" : "my_q2"} -->
+    *Write your answer here, replacing this text.*
+    <!-- #endregion -->
+
+    """)
+    assert (make_filtered(inp_str,
+                          template2exercise,
+                          str_filt_func=strip_model_answers) ==
+            exp_str)
