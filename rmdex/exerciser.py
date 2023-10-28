@@ -5,6 +5,8 @@ import re
 from functools import partial
 import codecs
 
+from statemachine import StateMachine, State
+
 from rnbgrader import loads
 from rnbgrader.nbparser import Chunk
 
@@ -83,6 +85,63 @@ def add_marks(code, total, always=False):
     return ''.join(lines)
 
 
+class ExerciseMachine(StateMachine):
+    "A state machine to generate the exercise"
+
+    default = State(initial=True)
+    both_line = State()
+    both_section = State()
+    both_to_end = State()
+
+    process_line = (
+        default.to(both_line, cond='both_line_mark')
+        | default.to(both_to_end, cond='both_end_mark')
+        | default.to(both_section, cond='both_section_mark')
+        | default.to.itself(on='default_line')
+        | both_line.to(default, on='append_line')
+        | both_section.to(default, cond='both_section_mark')
+        | both_section.to.itself(on='append_line')
+        | both_to_end.to.itself(on='append_line')
+    )
+
+    def __init__(self, code):
+        self.code = code
+        super().__init__()
+
+    def both_line_mark(self, line):
+        return line.strip() == '#<--'
+
+    def both_section_mark(self, line):
+        return line.lstrip() == '#<-'
+
+    def both_end_mark(self, line):
+        return line.strip() == '#<->'
+
+    def append_line(self, line):
+        return line
+
+    def default_line(self, line):
+        sline = line.lstrip()
+        # We allow "#<- " (with space(s)) as placeholder for blank line.
+        if sline.startswith('#<- '):
+           return line.replace('#<- ', '')
+        if sline.startswith('#<-'):
+            raise MarkupError('There must be a space after the #<- marker '
+                              'unless it is a both-line marker or a '
+                              'line on its own:\n' + self.code)
+        if sline.startswith('#-'):
+            return line
+        return None
+
+    def parse(self):
+        lines = [self.process_line(line) for line in self.code.splitlines()]
+        if self.current_state == self.both_line:
+            raise MarkupError('No line after #<-- marker:\n' + self.code)
+        if self.current_state == self.both_section:
+            raise MarkupError('Missing a closing #<- marker:\n' + self.code)
+        return '\n'.join(L for L in lines if L is not None) + '\n'
+
+
 def template2exercise(code):
     """ Convert `code` marked up for exercise + solution to exercise format.
 
@@ -96,48 +155,7 @@ def template2exercise(code):
     exercise_code : str
         Code as it will appear in the exercise version.
     """
-    lines = []
-    state = 'default'
-    for line in code.splitlines():
-        if state == 'both-line':
-            lines.append(line)
-            state = 'default'
-            continue
-        sline = line.lstrip()
-        is_both_mark = sline == '#<-'  # Start/end of both-mark
-        if state == 'both-section':
-            if is_both_mark:
-                state = 'default'
-                continue
-        if state in ('both-section', 'both-to-end'):
-            lines.append(line)
-            continue
-        # Must be default state
-        assert state == 'default'
-        if is_both_mark:
-            state = 'both-section'
-            continue
-        if sline == '#<->':  # both-to-end marker
-            state = 'both-to-end'
-            continue
-        elif sline == '#<--':  # both-line marker - next line ex + solution.
-            state = 'both-line'
-            continue
-        if not sline.startswith('#'):
-            continue
-        if sline.startswith('#<- '):
-            lines.append(line.replace('#<- ', ''))
-        elif sline.startswith('#<-'):
-            raise MarkupError('There must be a space after the #<- marker '
-                              'unless it is a both-line marker or a '
-                              'line on its own:\n' + code)
-        elif sline.startswith('#-'):
-            lines.append(line)
-    if state == 'both-line':
-        raise MarkupError('No line after #<-- marker:\n' + code)
-    if state == 'both-section':
-        raise MarkupError('Missing a closing #<- marker:\n' + code)
-    return '\n'.join(lines) + '\n'
+    return ExerciseMachine(code).parse()
 
 
 def template2solution(code):
