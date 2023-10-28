@@ -224,19 +224,35 @@ def strip_model_answers(nb_str):
                     flags=re.M | re.S)
 
 
-def make_filtered(template_str, filt_func=None, str_filt_func=None):
+def make_filtered(template_str, q_filt_func=None, str_filt_func=None):
+    """ Filter `template_str` with question and string filter functions
+
+    Parameters
+    ----------
+    template_str : str
+        String containing RMarkdown notebook
+    q_filt_func : None or callable, optional
+        Callable to filter questions, apassed to :func:`process_questions`
+    str_filt_func : None or callable, optional
+        Callable to filter text.
+
+    Returns
+    -------
+    out_nb_str : str
+        Filtered notebook text.
+    """
     out_nb = loads(template_str)
-    if filt_func:
-        out_nb_str = process_questions(out_nb, filt_func)
+    if q_filt_func:
+        out_nb_str = process_questions(out_nb, q_filt_func)
     if str_filt_func:
         out_nb_str = str_filt_func(out_nb_str)
-    return out_nb
+    return out_nb_str
 
 
-make_exercise = partial(make_filtered, filt_func=template2exercise,
+make_exercise = partial(make_filtered, q_filt_func=template2exercise,
                         str_filt_func=strip_model_answers)
 
-make_solution = partial(make_filtered, filt_func=template2solution)
+make_solution = partial(make_filtered, q_filt_func=template2solution)
 
 
 def check_marks(nb_str, total=100):
