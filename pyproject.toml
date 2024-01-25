@@ -29,6 +29,7 @@ description-file="README.rst"
 # Check against requirements.txt
 requires = [
     'rnbgrader>=0.2',
+    'python-statemachine'
 ]
 requires-python=">=3.8"
 
