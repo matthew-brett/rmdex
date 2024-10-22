@@ -56,7 +56,8 @@ Releasing Rmdex
 
 * When ready::
 
-    python setup.py sdist --formats=zip
+    pip install build twine
+    python -m build --sdist
     # -s flag to sign the release
     twine upload -s dist/rmdex*zip
 

@@ -13,6 +13,16 @@ Rmdex change log
 Releases
 ********
 
+* 0.3 (Wednesday October 23 2024):
+
+  * Allow filtering of model answers.
+  * Remove versioneer.
+  * Port to formal python-statemachine parser.
+
+* 0.2 (Sunday February 2, 2020):
+
+  * Add both-to-end marker #<->
+
 * 0.1 (Saturday November 9 2019)
 
   First release.
