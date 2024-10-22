@@ -58,8 +58,7 @@ Releasing Rmdex
 
     pip install build twine
     python -m build --sdist
-    # -s flag to sign the release
-    twine upload -s dist/rmdex*zip
+    twine upload dist/rmdex*tar.gz
 
 * Upload the release commit and tag to github::
 
@@ -70,5 +69,7 @@ Releasing Rmdex
 
     cd doc
     make github
+
+* Update the version number to an alpha again.
 
 .. include:: ../links_names.inc
